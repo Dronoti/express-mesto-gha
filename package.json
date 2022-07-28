@@ -22,6 +22,7 @@
   "homepage": "https://dronoti.github.io/express-mesto-gha",
   "dependencies": {
     "express": "^4.18.1",
+    "mongoose": "^6.5.0",
     "nth-check": "^2.0.1"
   },
   "devDependencies": {

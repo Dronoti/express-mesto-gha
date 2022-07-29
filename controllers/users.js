@@ -1,41 +1,33 @@
 const User = require('../models/user');
+const { badRequest, notFound, internalServer } = require('../errors/errors');
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch((err) => res.status(400).send({
-      message: 'Переданы некорректные данные',
-      error: err.message,
-    }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') badRequest(err, res);
+      else internalServer(err, res);
+    });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (user) {
-        res.send(user);
-      } else {
-        res.status(404).send({
-          message: 'Пользователь не найден',
-          error: 'Not found',
-        });
-      }
+      if (user) res.send(user);
+      else notFound({ message: 'Not Found' }, res);
     })
-    .catch((err) => res.status(400).send({
-      message: 'Переданы некорректные данные',
-      error: err.message,
-    }));
+    .catch((err) => {
+      if (err.name === 'CastError') badRequest(err, res);
+      else internalServer(err, res);
+    });
 };
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => res.status(500).send({
-      message: 'Произошла ошибка',
-      error: err.message,
-    }));
+    .catch((err) => internalServer(err, res));
 };
 
 module.exports.updateUserData = (req, res) => {
@@ -49,11 +41,14 @@ module.exports.updateUserData = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send(user))
-    .catch((err) => res.status(400).send({
-      message: 'Переданы некорректные данные',
-      error: err.message,
-    }));
+    .then((user) => {
+      if (user) res.send(user);
+      else notFound({ message: 'Not Found' }, res);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') badRequest(err, res);
+      else internalServer(err, res);
+    });
 };
 
 module.exports.updateUserAvatar = (req, res) => {
@@ -67,9 +62,12 @@ module.exports.updateUserAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send(user))
-    .catch((err) => res.status(400).send({
-      message: 'Переданы некорректные данные',
-      error: err.message,
-    }));
+    .then((user) => {
+      if (user) res.send(user);
+      else notFound({ message: 'Not Found' }, res);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') badRequest(err, res);
+      else internalServer(err, res);
+    });
 };

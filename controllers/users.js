@@ -37,3 +37,37 @@ module.exports.getAllUsers = (req, res) => {
       error: err.message,
     }));
 };
+
+module.exports.updateUserData = (req, res) => {
+  const { name, about } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    {
+      new: true,
+      runValidators: true
+    })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(400).send({
+      message: 'Переданы некорректные данные',
+      error: err.message,
+    }));
+}
+
+module.exports.updateUserAvatar = (req, res) => {
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    {
+      new: true,
+      runValidators: true
+    })
+    .then((user) => res.send(user))
+    .catch((err) => res.status(400).send({
+      message: 'Переданы некорректные данные',
+      error: err.message,
+    }));
+}

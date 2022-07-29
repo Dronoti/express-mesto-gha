@@ -4,7 +4,7 @@ const {
   getAllUsers,
   getUserById,
   updateUserData,
-  updateUserAvatar
+  updateUserAvatar,
 } = require('../controllers/users');
 
 const router = express.Router();

@@ -58,7 +58,7 @@ module.exports.likeCard = (req, res) => {
       message: 'Переданы некорректные данные',
       error: err.message,
     }));
-}
+};
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
@@ -80,4 +80,4 @@ module.exports.dislikeCard = (req, res) => {
       message: 'Переданы некорректные данные',
       error: err.message,
     }));
-}
+};

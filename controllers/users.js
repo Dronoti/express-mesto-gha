@@ -16,7 +16,7 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'CastError') badRequest(err, res);
@@ -43,7 +43,7 @@ module.exports.updateUserData = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') badRequest(err, res);
@@ -64,7 +64,7 @@ module.exports.updateUserAvatar = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') badRequest(err, res);

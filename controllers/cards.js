@@ -22,7 +22,7 @@ module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'CastError') badRequest(err, res);
@@ -38,7 +38,7 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'CastError') badRequest(err, res);
@@ -54,7 +54,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ message: 'Not Found' }, res);
+      else notFound({ name: 'Not Found' }, res);
     })
     .catch((err) => {
       if (err.name === 'CastError') badRequest(err, res);

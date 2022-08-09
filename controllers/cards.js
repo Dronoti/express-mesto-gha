@@ -7,26 +7,26 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'ValidationError') badRequest(res);
+      else internalServer(res);
     });
 };
 
 module.exports.getAllCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => internalServer(err, res));
+    .catch(() => internalServer(res));
 };
 
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'CastError') badRequest(res);
+      else internalServer(res);
     });
 };
 
@@ -38,11 +38,11 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'CastError') badRequest(res);
+      else internalServer(res);
     });
 };
 
@@ -54,10 +54,10 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) res.send(card);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'CastError') badRequest(res);
+      else internalServer(res);
     });
 };

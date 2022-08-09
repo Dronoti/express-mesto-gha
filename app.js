@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
-app.use('*', (req, res) => notFound({ name: 'Not Found' }, res));
+app.use('*', (req, res) => notFound(res));
 
 app.listen(PORT);
 

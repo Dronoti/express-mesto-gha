@@ -7,8 +7,8 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'ValidationError') badRequest(res);
+      else internalServer(res);
     });
 };
 
@@ -16,18 +16,18 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'CastError') badRequest(res);
+      else internalServer(res);
     });
 };
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => internalServer(err, res));
+    .catch(() => internalServer(res));
 };
 
 module.exports.updateUserData = (req, res) => {
@@ -43,11 +43,11 @@ module.exports.updateUserData = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'ValidationError') badRequest(res);
+      else internalServer(res);
     });
 };
 
@@ -64,10 +64,10 @@ module.exports.updateUserAvatar = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound({ name: 'Not Found' }, res);
+      else notFound(res);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(err, res);
-      else internalServer(err, res);
+      if (err.name === 'ValidationError') badRequest(res);
+      else internalServer(res);
     });
 };

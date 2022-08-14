@@ -11,19 +11,19 @@ module.exports.createUser = (req, res) => {
     password,
   } = req.body;
 
-  bcrypt.has(password, 10)
+  bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
       about,
       avatar,
       email,
       password: hash,
-    })
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') badRequest(res);
-        else internalServer(res);
-      }));
+    }))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') badRequest(res);
+      else internalServer(res);
+    });
 };
 
 module.exports.getUserById = (req, res) => {

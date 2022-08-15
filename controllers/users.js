@@ -1,14 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {
-  badRequest,
-  notFound,
-  internalServer,
-  unauthorizedError,
-} = require('../errors/errors');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -17,7 +15,13 @@ module.exports.createUser = (req, res) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new ConflictError(`Пользователь ${email} уже зарегистрирован`);
+      }
+      return bcrypt.hash(password, 10);
+    })
     .then((hash) => User.create({
       name,
       about,
@@ -27,42 +31,42 @@ module.exports.createUser = (req, res) => {
     }))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(res);
-      else internalServer(res);
+      if (err.name === 'ValidationError') next(new BadRequestError('Переданы некорректные данные'));
+      else next(err);
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) res.send(user);
-      else notFound(res);
+      else throw new NotFoundError('Пользователь не найден');
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(res);
-      else internalServer(res);
+      if (err.name === 'CastError') next(new BadRequestError('Переданы некорректные данные'));
+      else next(err);
     });
 };
 
-module.exports.getMyUser = (req, res) => {
+module.exports.getMyUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (user) res.send(user);
-      else notFound(res);
+      else throw new NotFoundError('Пользователь не найден');
     })
     .catch((err) => {
-      if (err.name === 'CastError') badRequest(res);
-      else internalServer(res);
+      if (err.name === 'CastError') next(new BadRequestError('Переданы некорректные данные'));
+      else next(err);
     });
 };
 
-module.exports.getAllUsers = (req, res) => {
+module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => internalServer(res));
+    .catch(next);
 };
 
-module.exports.updateUserData = (req, res) => {
+module.exports.updateUserData = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -75,15 +79,15 @@ module.exports.updateUserData = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound(res);
+      else throw new NotFoundError('Пользователь не найден');
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(res);
-      else internalServer(res);
+      if (err.name === 'ValidationError') next(new BadRequestError('Переданы некорректные данные'));
+      else next(err);
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -96,15 +100,15 @@ module.exports.updateUserAvatar = (req, res) => {
   )
     .then((user) => {
       if (user) res.send(user);
-      else notFound(res);
+      else throw new NotFoundError('Пользователь не найден');
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') badRequest(res);
-      else internalServer(res);
+      if (err.name === 'ValidationError') next(new BadRequestError('Переданы некорректные данные'));
+      else next(err);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -122,7 +126,7 @@ module.exports.login = (req, res) => {
         .send({ token });
     })
     .catch((err) => {
-      if (err.message === 'Неправильные почта или пароль') unauthorizedError(err, res);
-      else badRequest(res);
+      if (err.message === 'Неправильные почта или пароль') next(new UnauthorizedError(err.message));
+      else next(new BadRequestError('Переданы некорректные данные'));
     });
 };

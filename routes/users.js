@@ -1,6 +1,5 @@
 const express = require('express');
 const {
-  createUser,
   getAllUsers,
   getUserById,
   updateUserData,
@@ -9,7 +8,6 @@ const {
 
 const router = express.Router();
 
-router.post('/', express.json(), createUser);
 router.get('/', getAllUsers);
 router.get('/:userId', getUserById);
 router.patch('/me', express.json(), updateUserData);

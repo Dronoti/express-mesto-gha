@@ -7,8 +7,8 @@ const { linkRegex } = require('../middlewares/validator');
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
     unique: true,
+    required: true,
     validate: {
       validator: (email) => validator.isEmail(email),
       message: 'Неверный формат email',

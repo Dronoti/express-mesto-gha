@@ -44,6 +44,18 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
+module.exports.getMyUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) res.send(user);
+      else notFound(res);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') badRequest(res);
+      else internalServer(res);
+    });
+};
+
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
@@ -107,7 +119,7 @@ module.exports.login = (req, res) => {
         httpOnly: true,
         sameSite: true,
       })
-        .send({ message: 'Успешный вход' });
+        .send({ token });
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') unauthorizedError(err, res);

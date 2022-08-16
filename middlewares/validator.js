@@ -7,7 +7,7 @@ module.exports.linkRegex = linkRegex;
 module.exports.loginDataIsValid = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 });
 
@@ -16,7 +16,7 @@ module.exports.registerDataIsValid = celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
     avatar: Joi.string().pattern(linkRegex),
   }),
 });

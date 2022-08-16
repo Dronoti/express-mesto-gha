@@ -117,12 +117,7 @@ module.exports.login = (req, res, next) => {
         '7a46dae98fcaadaa92da1218384d0adeadc7049133f2841674553703bb5e0f9e',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      })
-        .send({ token });
+      res.send({ token });
     })
     .catch((err) => {
       if (err.message === 'Неправильные почта или пароль') next(new UnauthorizedError(err.message));

@@ -8,6 +8,7 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/NotFoundError');
 const { createUser, login } = require('./controllers/users');
 const { loginDataIsValid, registerDataIsValid } = require('./middlewares/validator');
+const { handleErrors } = require('./middlewares/handleErrors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -21,22 +22,10 @@ app.post('/signup', express.json(), registerDataIsValid, createUser);
 
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
-app.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
+app.use('*', auth, (req, res, next) => next(new NotFoundError('Страница не найдена')));
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-
-  next();
-});
+app.use(handleErrors);
 
 app.listen(PORT);
